@@ -6,6 +6,10 @@
 (function () {
   "use strict";
 
+  // Data from data/diseases.js and data/drugs.js (must load before this script)
+  var diseases = window.diseases || [];
+  var drugs = window.drugs || [];
+
   // ---------- State ----------
   let currentPage = "diseases";
   let diseaseFilter = "All";
@@ -510,6 +514,21 @@
 
   // ---------- Init ----------
   function init() {
+    // Re-read in case scripts finished after this file started
+    if ((!diseases || !diseases.length) && window.diseases) diseases = window.diseases;
+    if ((!drugs || !drugs.length) && window.drugs) drugs = window.drugs;
+
+    if (!diseases.length) {
+      console.error("MedGuide: diseases data failed to load. Check that data/diseases.js is present and loads before app.js.");
+      var grid = document.getElementById("diseaseGrid");
+      if (grid) {
+        grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">⚠️</div><p>Disease data could not be loaded.<br>Make sure <code>data/diseases.js</code> is included and the site was uploaded with the full folder structure.</p></div>';
+      }
+    }
+    if (!drugs.length) {
+      console.error("MedGuide: drugs data failed to load. Check that data/drugs.js is present and loads before app.js.");
+    }
+
     applyTheme(currentTheme);
     buildSystemFilters();
     bindEvents();
