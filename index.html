@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MedGuide Offline – Educational clinical reference tool. Disease search, symptom explorer, and drug reference. Works completely offline.">
+  <meta name="theme-color" content="#0d6efd">
+  <title>MedGuide Offline – Educational Medical Reference</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="logo" data-page="diseases" onclick="return false;">
+        <span class="logo-icon" aria-hidden="true">🩺</span>
+        <span>MedGuide Offline</span>
+      </a>
+
+      <nav aria-label="Main navigation">
+        <ul class="nav-links">
+          <li><a href="#diseases" data-page="diseases" class="active">Diseases</a></li>
+          <li><a href="#symptoms" data-page="symptoms">Symptom Explorer</a></li>
+          <li><a href="#drugs" data-page="drugs">Drug Reference</a></li>
+          <li><a href="#about" data-page="about">About</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+        <button type="button" id="menuToggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Global Disclaimer -->
+    <div class="disclaimer-banner" role="note">
+      <strong>⚠️ Disclaimer:</strong>
+      <span>This website is for educational purposes only. It does not diagnose disease or prescribe treatment. Do not start, stop, or change medication based solely on this website. Consult a qualified healthcare professional for diagnosis and treatment.</span>
+    </div>
+
+    <!-- ========== DISEASES PAGE ========== -->
+    <section id="page-diseases" class="page active" aria-labelledby="diseases-heading">
+      <h1 id="diseases-heading" class="sr-only">Disease Search</h1>
+
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">🔎</span>
+        <input type="search" id="diseaseSearch" placeholder="Search diseases by name, symptom, body system, or keyword…" aria-label="Search diseases" autocomplete="off">
+      </div>
+
+      <div class="filters" id="systemFilters" role="group" aria-label="Filter by body system">
+        <!-- Populated by JS -->
+      </div>
+
+      <div class="cards-grid" id="diseaseGrid" role="list">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- ========== SYMPTOM EXPLORER PAGE ========== -->
+    <section id="page-symptoms" class="page" aria-labelledby="symptoms-heading">
+      <h1 id="symptoms-heading" style="font-size:1.5rem;margin-bottom:1rem;color:var(--primary)">Educational Symptom Explorer</h1>
+
+      <div class="edu-disclaimer">
+        This tool compares selected symptoms with a local educational database. Results are ranked by simple symptom overlap and are <strong>not a diagnosis</strong>. Always seek professional medical advice.
+      </div>
+
+      <div id="emergencyBanner" class="emergency-banner" role="alert">
+        🚨 One or more selected symptoms or answers suggest a possible emergency. Seek urgent medical care or emergency services immediately. Do not rely on this website for emergency decisions.
+      </div>
+
+      <div class="symptom-form">
+        <div class="form-group">
+          <label>What symptoms are present? (select all that apply)</label>
+          <div class="symptom-chips" id="symptomChips" role="group" aria-label="Symptom selection">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>How long have symptoms been present?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="duration" value="hours"> Hours</label>
+            <label><input type="radio" name="duration" value="days"> Days</label>
+            <label><input type="radio" name="duration" value="weeks"> Weeks</label>
+            <label><input type="radio" name="duration" value="months"> Months or longer</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Overall severity</label>
+          <div class="radio-group">
+            <label><input type="radio" name="severity" value="mild"> Mild</label>
+            <label><input type="radio" name="severity" value="moderate"> Moderate</label>
+            <label><input type="radio" name="severity" value="severe"> Severe</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Is fever present?</label>
+          <div class="radio-group">
+            <label><input type="radio" name="fever" value="no"> No</label>
+            <label><input type="radio" name="fever" value="low"> Low-grade</label>
+            <label><input type="radio" name="fever" value="high"> High</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Any emergency warning signs? (severe difficulty breathing, severe chest pain, fainting, confusion, sudden weakness/speech difficulty, major bleeding, severe allergic reaction, etc.)</label>
+          <div class="radio-group">
+            <label><input type="radio" name="emergency" value="no"> No</label>
+            <label><input type="radio" name="emergency" value="yes"> Yes</label>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+          <button type="button" id="runMatchBtn" class="btn btn-primary">Show Educational Matches</button>
+          <button type="button" id="resetSymptomsBtn" class="btn btn-secondary">Reset</button>
+        </div>
+      </div>
+
+      <div class="results-area" id="symptomResults" aria-live="polite">
+        <!-- Results appear here -->
+      </div>
+    </section>
+
+    <!-- ========== DRUG REFERENCE PAGE ========== -->
+    <section id="page-drugs" class="page" aria-labelledby="drugs-heading">
+      <h1 id="drugs-heading" class="sr-only">Drug Reference</h1>
+
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">💊</span>
+        <input type="search" id="drugSearch" placeholder="Search medicines by generic name, brand, class, or indication…" aria-label="Search medicines" autocomplete="off">
+      </div>
+
+      <div class="cards-grid" id="drugGrid" role="list">
+        <!-- Populated by JS -->
+      </div>
+    </section>
+
+    <!-- ========== ABOUT PAGE ========== -->
+    <section id="page-about" class="page" aria-labelledby="about-heading">
+      <div class="about-content">
+        <h2 id="about-heading">About MedGuide Offline</h2>
+        <p>
+          MedGuide Offline is a self-contained educational clinical reference tool designed for learning and quick reference.
+          It runs entirely in your browser with no internet connection, external APIs, or tracking.
+        </p>
+
+        <h3>What this tool is</h3>
+        <ul>
+          <li>An educational disease and medicine reference</li>
+          <li>A structured symptom explorer that shows possible educational matches based on symptom overlap</li>
+          <li>A local drug information lookup covering class, mechanism, indications, cautions, and counseling points</li>
+        </ul>
+
+        <h3>What this tool is not</h3>
+        <ul>
+          <li>Not a diagnostic device or medical device</li>
+          <li>Not a substitute for professional medical advice, diagnosis, or treatment</li>
+          <li>Not a prescribing tool — it never recommends a specific medicine for an individual patient</li>
+          <li>Not an emergency service</li>
+        </ul>
+
+        <h3>Safety principles</h3>
+        <ul>
+          <li>Symptom matching is clearly labeled as educational only</li>
+          <li>Emergency warning signs are highlighted when relevant</li>
+          <li>Medicine information includes contraindications, interactions, and monitoring points</li>
+          <li>Language avoids “take this drug” instructions</li>
+        </ul>
+
+        <h3>How to use offline</h3>
+        <ol>
+          <li>Extract the ZIP file to any folder on your computer or device</li>
+          <li>Open <code>index.html</code> in a modern web browser (Chrome, Firefox, Edge, Safari, etc.)</li>
+          <li>No installation, server, or internet connection is required</li>
+        </ol>
+
+        <h3>Adding more data</h3>
+        <p>
+          Disease entries live in <code>data/diseases.js</code>. Medicine entries live in <code>data/drugs.js</code>.
+          Follow the existing object structure and reload the page after saving changes.
+        </p>
+
+        <h3>Privacy</h3>
+        <p>
+          All data stays on your device. Theme preference is stored in local browser storage only.
+          No analytics, accounts, or network requests are made by this application.
+        </p>
+
+        <div class="disclaimer-banner" style="margin-top:1.5rem">
+          <strong>⚠️ Important:</strong>
+          <span>This website is for educational purposes only. It does not diagnose disease or prescribe treatment. Do not start, stop, or change medication based solely on this website. Consult a qualified healthcare professional for diagnosis and treatment.</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>MedGuide Offline — Educational use only. Not for diagnosis or prescribing.</p>
+    <p style="margin-top:0.35rem">Works completely offline. No external services.</p>
+  </footer>
+
+  <!-- Modal -->
+  <div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle" class="modal-title">Details</h2>
+        <button type="button" id="modalClose" class="modal-close" aria-label="Close dialog">&times;</button>
+      </div>
+      <div id="modalBody" class="modal-body">
+        <!-- Content injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Data + App (order matters) -->
+  <script src="data/diseases.js"></script>
+  <script src="data/drugs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
